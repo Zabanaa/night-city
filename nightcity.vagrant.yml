@@ -4,7 +4,6 @@
   become: yes
   gather_facts: no # Critical for this to work
   vars:
-      sshd_port: 443
       sshd_permitrootlogin: yes
       sshd_publickeyauth: yes
       sshd_passwdauth: yes
