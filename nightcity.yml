@@ -1,0 +1,12 @@
+---
+- hosts: wintermute
+  remote_user: zabana
+  become: yes
+  pre_tasks:
+      - name: "Add man to the sudoers"
+        raw: sudo echo "zabana ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers
+  tasks:
+      - name: "Doing the tings"
+        raw: echo "success"
+
+
