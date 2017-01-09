@@ -1,0 +1,16 @@
+---
+- hosts: vagrant
+  remote_user: ubuntu # or vagrant or whatevs really
+  become: yes
+  gather_facts: no # Critical for this to work
+  pre_tasks:
+      - name: "Add man to the sudoers"
+        raw: sudo echo "ubuntu ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers
+
+      - name: "Install Python"
+        raw: sudo apt-get update && sudo apt-get install python-simplejson
+  tasks:
+      - name: "Doing the tings"
+        raw: echo "success"
+
+
