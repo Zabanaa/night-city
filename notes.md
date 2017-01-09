@@ -15,12 +15,29 @@ find the section that deals with privileges. It should look something like this
 # User privilege specification
 root      ALL=(ALL:ALL) ALL
 ```
-
 copy the line, paste it below and add the following
+
 ```bash
 yourusernamehere ALL=(ALL:ALL) NOPASSWD:ALL
 ```
+
 This will remove the annoying password prompt when executing sudo commands
+
+Alternatively, you could do the same thing inside the playbook.yml
+
+```
+---
+- hosts: wintermute
+  remote_user: zabana
+  become: yes
+  # gather_facts: no
+  pre_tasks:
+      - name: "add me to the sudoers"
+        raw: sudo echo "zabana ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers
+  tasks:
+      - name: "Doing the tings"
+        raw: echo "success"
+```
 
 2. properly setup the host in the inventory file (called using -i)
 
