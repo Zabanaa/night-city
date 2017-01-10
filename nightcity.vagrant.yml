@@ -7,6 +7,8 @@
       sshd_permitrootlogin: yes
       sshd_publickeyauth: yes
       sshd_passwdauth: yes
+      nginx_domain_alias: zabana.dev
+      nginx_ip_address: 192.168.17.10
 
   pre_tasks:
       - name: "Add man to the sudoers"
@@ -17,3 +19,4 @@
 
   roles:
       - common
+      - nginx

@@ -1,0 +1,9 @@
+- name: "Install Nginx"
+  apt: name=nginx state=present update_cache=yes
+
+- name: "Copy config file"
+  template: src=templates/zabana.jinja2 dest=/etc/nginx/sites-available/zabana
+
+- name: "Enable the newly copied config"
+  file: src=/etc/nginx/sites-available/zabana dest=/etc/nginx/sites-enabled/zabana state=link
+  notify: reload nginx
