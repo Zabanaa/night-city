@@ -5,9 +5,9 @@
 - name: "Download Open SSH"
   apt: name=openssh-server state=present
 
-- name: "Update sshd config"
-  template: src=templates/sshd_config.jinja2 dest=/etc/ssh/sshd_config
-  notify: restart ssh
+# - name: "Update sshd config"
+#   template: src=templates/sshd_config.jinja2 dest=/etc/ssh/sshd_config
+#   notify: restart ssh
 
 - name: "Install Necessary Packages"
   apt: name={{item}} state=present
