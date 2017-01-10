@@ -1,5 +1,5 @@
 - Add group vars folder
-
+- create postgres user
 
 # Roles
 

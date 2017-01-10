@@ -1,0 +1,41 @@
+- name: "Add Ruby PPA"
+  apt_repository: repo="ppa:brightbox/ruby-ng" state=present update_cache=yes
+
+- name: "Install Ruby"
+  apt: name={{item}} state=present
+  with_items:
+      - ruby2.2
+      - ruby2.2-dev
+
+- name: "Add Node.js PPA"
+  get_url:
+    url: https://deb.nodesource.com/setup_6.x
+    dest: /home/ubuntu/nodesource_setup.sh
+
+- name: "Install Nodejs"
+  command: bash /home/ubuntu/nodesource_setup.sh
+
+- name: "Install git"
+  apt: name=git update_cache=yes
+
+- name: "Copy git config"
+  template: src=templates/gitconfig.jinja2 dest=/home/ubuntu/.gitconfig
+
+- name: "Install postgres"
+  apt: name={{item}} state=present update_cache=yes
+  with_items:
+      - postgresql
+      - postgresql-contrib
+
+- name: "Install pip"
+  apt: name={{item}} update_cache=yes
+  with_items:
+      - python3-pip
+      - python-pip
+
+- name: "Install Jekyll"
+  gem: name={{item}} state=present
+  with_items:
+      - jekyll
+      - bundler
+      - rouge

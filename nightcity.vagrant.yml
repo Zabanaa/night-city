@@ -9,6 +9,8 @@
       sshd_passwdauth: yes
       nginx_domain_alias: zabana.dev
       nginx_ip_address: 192.168.17.10
+      git_username: Karim Cheurfi
+      git_email: karim.cheurfi@gmail.com
 
   pre_tasks:
       - name: "Add man to the sudoers"
@@ -20,3 +22,4 @@
   roles:
       - common
       - nginx
+      - webdev
