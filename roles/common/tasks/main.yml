@@ -1,7 +1,4 @@
 ---
-- name: "Update Apt"
-  raw: sudo apt-get update
-
 - name: "Install Necessary Packages"
   apt: name={{item}} state=present
   with_items:
@@ -13,8 +10,9 @@
       - wget
       - tree
 
-- name: "Create User Zabana"
-  user: name=zabana shell=/bin/bash groups=sudo append=yes state=present
+- name: "Create User {{username}}"
+  user: name={{username}} shell=/bin/bash groups=sudo append=yes state=present
+  notify: fix home folder permissions
 
 - name: "Add my man to the sudoers"
   template: src=templates/sudoers.jinja2 dest=/etc/sudoers
@@ -25,37 +23,45 @@
 - name: "Install fish shell"
   apt: name=fish state=present
 
-- name: "Download oh-my-fish"
-  git:
-      repo: https://github.com/oh-my-fish/oh-my-fish
-      dest: /home/ubuntu/oh-my-fish
-      clone: yes
-
 - name: "Create fish config directory"
-  file: path=/home/ubuntu/.config/fish/functions state=directory
+  file: path="/home/{{username}}/.config/fish/functions" state=directory
+
+- name: "Install Fundle"
+  get_url:
+      url: https://git.io/fundle-install
+      dest: "/home/{{username}}/fundle-install"
+  notify: install fundle
 
 - name: "Change my man's shell to fish"
-  command: /usr/bin/chsh -s /usr/bin/fish zabana
+  command: "/usr/bin/chsh -s /usr/bin/fish {{username}}"
+  become_user: root
 
 - name: "Download Oh my fish"
-  git: repo=https://github.com/oh-my-fish/oh-my-fish dest=/home/ubuntu/oh-my-fish clone=yes
+  get_url:
+      url: http://get.oh-my.fish
+      dest: "/home/{{username}}/install"
+  notify: install omf
 
 - name: "Install Vundle"
   git:
     repo: https://github.com/VundleVim/Vundle.vim.git
-    dest: /home/ubuntu/.vim/bundle/Vundle.vim
+    dest: "/home/{{username}}/.vim/bundle/Vundle.vim"
     clone: yes
 
-- name: "Copy my vimrc"
-  copy: src=~/.dotfiles/.vimrc dest=~/.vimrc
 
-- name: "Copy my tmux conf"
-  copy: src=~/.tmux.conf dest=~/.tmux.conf
+- name: "download my dotfiles"
+  git:
+      repo: https://github.com/Zabanaa/dotfiles.git
+      dest: "/home/{{username}}/.dotfiles"
+      clone: yes
 
-- name: "Copy my fish shell conf"
-  copy: src=~/.dotfiles/config.fish dest=/home/ubuntu/.config/fish/config.fish
+- name: "download and install fish functions"
+  git:
+      repo: https://github.com/Zabanaa/plenty-of-fish.git
+      dest: "/home/{{username}}/fishfuncs"
+      clone: yes
+  notify: install fish functions
 
-- name: "Copy my fish functions"
-  copy: src={{item}} dest=/home/ubuntu/.config/fish/functions
-  with_fileglob:
-      - ~/.config/fish/functions/*.fish
+- name: "install dotfiles"
+  template: src=templates/install.sh.jinja2 dest="/home/{{username}}/.dotfiles/install.sh"
+  notify: install dotfiles
