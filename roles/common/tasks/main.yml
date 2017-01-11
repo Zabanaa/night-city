@@ -31,6 +31,12 @@
 - name: "Install fish shell"
   apt: name=fish state=present
 
+- name: "Download oh-my-fish"
+  git:
+      repo: https://github.com/oh-my-fish/oh-my-fish
+      dest: /home/ubuntu/oh-my-fish
+      clone: yes
+
 - name: "Create fish config directory"
   file: path=/home/ubuntu/.config/fish/functions state=directory
 
