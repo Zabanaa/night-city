@@ -1,21 +1,4 @@
+---
 - name: fix home folder permissions
   raw: "chown {{username}}:{{username}} -R /home/{{username}}"
-
-- name: "install fundle"
-  raw: "cd /home/{{username}} && fish fundle-install"
-  become: yes
-  become_user: root
-
-- name: "install fish functions"
-  copy: src="/home/{{username}}/fishfuncs/{{item}}" dest="/home/{{username}}/.config/fish/functions"
-  with_fileglob:
-      - "/home/{{username}}/fishfuncs/*.fish"
-
-- name: "install dotfiles"
-  raw: "sudo bash /home/{{username}}/.dotfiles/install.sh"
-
-- name: "install omf"
-  raw: "cd /home/{{username}} && fish install --path=~/.local/share/omf --config=~/.config/omf"
-  become: yes
-  become_user: root
-
+  become: true

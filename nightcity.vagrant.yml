@@ -1,13 +1,10 @@
 ---
 - hosts: vagrant
+  name: Setup Wintermute
   remote_user: ubuntu # or vagrant or whatevs really
   become: yes
   gather_facts: no # Critical for this to work
   vars:
-      sshd_permitrootlogin: yes
-      sshd_publickeyauth: yes
-      sshd_passwdauth: yes
-      nginx_domain_alias: zabana.dev
       nginx_ip_address: 192.168.17.10
       git_username: Karim Cheurfi
       git_email: karim.cheurfi@gmail.com
@@ -15,10 +12,10 @@
 
   pre_tasks:
       - name: "Add man to the sudoers"
-        raw: sudo echo "ubuntu ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers
+        raw: sudo echo "{{username}} ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers
 
       - name: "Install Python"
-        raw: sudo apt-get update && sudo apt-get install -y python-simplejson
+        raw: sudo apt-get install -y python-simplejson
 
   roles:
       - common

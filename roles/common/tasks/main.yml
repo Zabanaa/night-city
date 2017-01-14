@@ -11,43 +11,68 @@
       - tree
 
 - name: "Create User {{username}}"
-  user: name={{username}} shell=/bin/bash groups=sudo append=yes state=present
+  user:
+      name: "{{username}}"
+      shell: /bin/bash
+      groups: sudo
+      append: yes
+      system: yes
+      home: "/home/{{username}}"
+      state: present
+  become_user: root
   notify: fix home folder permissions
 
 - name: "Add my man to the sudoers"
-  template: src=templates/sudoers.jinja2 dest=/etc/sudoers
+  template:
+      src: templates/sudoers.jinja2
+      dest: /etc/sudoers
 
 - name: "Add fish-shell PPA"
   apt_repository: repo="ppa:fish-shell/release-2" state=present update_cache=yes
+  become: yes
 
 - name: "Install fish shell"
   apt: name=fish state=present
+  become: yes
 
 - name: "Create fish config directory"
   file: path="/home/{{username}}/.config/fish/functions" state=directory
+  become: yes
+  notify: fix home folder permissions
 
-- name: "Install Fundle"
+- name: "Download Fundle"
   get_url:
       url: https://git.io/fundle-install
-      dest: "/home/{{username}}/fundle-install"
-  notify: install fundle
+      dest: "/home/{{username}}/.config/fish/functions/fundle.fish"
+  become: yes
 
 - name: "Change my man's shell to fish"
   command: "/usr/bin/chsh -s /usr/bin/fish {{username}}"
-  become_user: root
+  become: yes
 
 - name: "Download Oh my fish"
   get_url:
       url: http://get.oh-my.fish
       dest: "/home/{{username}}/install"
-  notify: install omf
+  become: true
 
 - name: "Install Vundle"
   git:
     repo: https://github.com/VundleVim/Vundle.vim.git
     dest: "/home/{{username}}/.vim/bundle/Vundle.vim"
     clone: yes
+  become: true
 
+- name: "Download my fish functions"
+  git:
+      repo: https://github.com/Zabanaa/plenty-of-fish.git
+      dest: "/home/{{username}}/fishfuncs"
+      clone: yes
+  become: true
+
+- name: "Install my fish functions"
+  shell: cp /home/{{username}}/fishfuncs/*.fish /home/{{username}}/.config/fish/functions
+  become: yes
 
 - name: "download my dotfiles"
   git:
@@ -55,13 +80,28 @@
       dest: "/home/{{username}}/.dotfiles"
       clone: yes
 
-- name: "download and install fish functions"
-  git:
-      repo: https://github.com/Zabanaa/plenty-of-fish.git
-      dest: "/home/{{username}}/fishfuncs"
-      clone: yes
-  notify: install fish functions
-
-- name: "install dotfiles"
+- name: "Create install script for my dotfiles"
   template: src=templates/install.sh.jinja2 dest="/home/{{username}}/.dotfiles/install.sh"
-  notify: install dotfiles
+
+- name: "Download seattle colorscheme"
+  git:
+      repo: https://github.com/mbbill/vim-seattle.git
+      dest: "/home/{{username}}/seattle"
+      clone: yes
+
+- name: "Create vim colors directory"
+  file: path="/home/{{username}}/.vim/colors" state=directory
+
+- name: "Install seattle colour scheme"
+  command: "cp /home/{{username}}/seattle/colors/seattle.vim /home/{{username}}/.vim/colors/"
+
+- name: "Install my dotfiles"
+  file:
+      src: "/home/{{username}}/.dotfiles/{{item.src}}"
+      dest: "{{item.dest}}"
+      state: link
+  with_items:
+      - {src: "config.fish", dest: "/home/{{username}}/.config/fish/config.fish"}
+      - {src: ".vimrc", dest: "/home/{{username}}/.vimrc"}
+      - {src: ".tmux.conf", dest: "/home/{{username}}/.tmux.conf"}
+  become: yes
