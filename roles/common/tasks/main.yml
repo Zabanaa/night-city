@@ -22,6 +22,12 @@
   become_user: root
   notify: fix home folder permissions
 
+- name: "Add authorized keys"
+  authorized_key:
+      user: "{{username}}"
+      state: present
+      key: "{{ssh_keys_url}}"
+
 - name: "Add my man to the sudoers"
   template:
       src: templates/sudoers.jinja2
@@ -68,6 +74,7 @@
       repo: https://github.com/Zabanaa/plenty-of-fish.git
       dest: "/home/{{username}}/fishfuncs"
       clone: yes
+      force: yes
   become: true
 
 - name: "Install my fish functions"
@@ -79,6 +86,7 @@
       repo: https://github.com/Zabanaa/dotfiles.git
       dest: "/home/{{username}}/.dotfiles"
       clone: yes
+      force: yes
 
 - name: "Create install script for my dotfiles"
   template: src=templates/install.sh.jinja2 dest="/home/{{username}}/.dotfiles/install.sh"
@@ -88,6 +96,7 @@
       repo: https://github.com/mbbill/vim-seattle.git
       dest: "/home/{{username}}/seattle"
       clone: yes
+      force: yes
 
 - name: "Create vim colors directory"
   file: path="/home/{{username}}/.vim/colors" state=directory

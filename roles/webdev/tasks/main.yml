@@ -10,16 +10,16 @@
 - name: "Add Node.js PPA"
   get_url:
     url: https://deb.nodesource.com/setup_6.x
-    dest: /home/ubuntu/nodesource_setup.sh
+    dest: /home/{{username}}/nodesource_setup.sh
 
 - name: "Install Nodejs"
-  command: bash /home/ubuntu/nodesource_setup.sh
+  command: bash /home/{{username}}/nodesource_setup.sh
 
 - name: "Install git"
   apt: name=git update_cache=yes
 
 - name: "Copy git config"
-  template: src=templates/gitconfig.jinja2 dest=/home/ubuntu/.gitconfig
+  template: src=templates/gitconfig.jinja2 dest=/home/{{username}}/.gitconfig
 
 - name: "Install postgres"
   apt: name={{item}} state=present update_cache=yes
