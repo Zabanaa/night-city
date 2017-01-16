@@ -1,6 +1,6 @@
 server {
 	listen 80;
-    server_name {{username}}.dev 192.168.17.10;
+    server_name {{ username }}.dev {{ groups['wintermute'][0] }};
 
 	root /usr/share/nginx/html;
 	index index.html index.htm;

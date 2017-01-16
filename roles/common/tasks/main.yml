@@ -3,6 +3,7 @@
   apt: name={{item}} state=present
   with_items:
       - openssh-server
+      - git
       - tmux
       - vim
       - htop
@@ -24,6 +25,9 @@
 - name: "Add man to the sudoers"
   raw: echo '%sudo	ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
+- name: "Copy git config"
+  template: src=templates/gitconfig.jinja2 dest=/home/{{username}}/.gitconfig
+
 - name: "Add authorized keys"
   authorized_key:
       user: "{{username}}"
@@ -40,30 +44,15 @@
   file: path="/home/{{username}}/.config/fish/functions" state=directory
   notify: fix home folder permissions
 
-- name: "Install git"
-  apt: name=git update_cache=yes
-
-- name: "Copy git config"
-  template: src=templates/gitconfig.jinja2 dest=/home/{{username}}/.gitconfig
-
 - name: "Download Fundle"
   get_url:
       url: https://git.io/fundle-install
       dest: "/home/{{username}}/.config/fish/functions/fundle.fish"
 
-- name: "Change my man's shell to fish"
-  command: "/usr/bin/chsh -s /usr/bin/fish {{username}}"
-
 - name: "Download Oh my fish"
   get_url:
       url: http://get.oh-my.fish
       dest: "/home/{{username}}/install"
-
-- name: "Install Vundle"
-  git:
-    repo: https://github.com/VundleVim/Vundle.vim.git
-    dest: "/home/{{username}}/.vim/bundle/Vundle.vim"
-    clone: yes
 
 - name: "Download my fish functions"
   git:
@@ -75,28 +64,15 @@
 - name: "Install my fish functions"
   shell: cp /home/{{username}}/fishfuncs/*.fish /home/{{username}}/.config/fish/functions
 
-- name: "download my dotfiles"
+- name: "Change my man's shell to fish"
+  command: "/usr/bin/chsh -s /usr/bin/fish {{username}}"
+
+- name: "Download my dotfiles"
   git:
       repo: https://github.com/Zabanaa/dotfiles.git
       dest: "/home/{{username}}/.dotfiles"
       clone: yes
       force: yes
-
-- name: "Create install script for my dotfiles"
-  template: src=templates/install.sh.jinja2 dest="/home/{{username}}/.dotfiles/install.sh"
-
-- name: "Download seattle colorscheme"
-  git:
-      repo: https://github.com/mbbill/vim-seattle.git
-      dest: "/home/{{username}}/seattle"
-      clone: yes
-      force: yes
-
-- name: "Create vim colors directory"
-  file: path="/home/{{username}}/.vim/colors" state=directory
-
-- name: "Install seattle colour scheme"
-  command: "cp /home/{{username}}/seattle/colors/seattle.vim /home/{{username}}/.vim/colors/"
 
 - name: "Install my dotfiles"
   file:
@@ -107,6 +83,25 @@
       - {src: "config.fish", dest: "/home/{{username}}/.config/fish/config.fish"}
       - {src: ".vimrc", dest: "/home/{{username}}/.vimrc"}
       - {src: ".tmux.conf", dest: "/home/{{username}}/.tmux.conf"}
+
+- name: "Create vim colors directory"
+  file: path="/home/{{username}}/.vim/colors" state=directory
+
+- name: "Download seattle colorscheme"
+  git:
+      repo: https://github.com/mbbill/vim-seattle.git
+      dest: "/home/{{username}}/seattle"
+      clone: yes
+      force: yes
+
+- name: "Install seattle colour scheme"
+  command: "cp /home/{{username}}/seattle/colors/seattle.vim /home/{{username}}/.vim/colors/"
+
+- name: "Install Vundle"
+  git:
+    repo: https://github.com/VundleVim/Vundle.vim.git
+    dest: "/home/{{username}}/.vim/bundle/Vundle.vim"
+    clone: yes
 
 # - stat: path="/home/{{username}}/.local/share/omf"
 #   register: omf

@@ -13,13 +13,10 @@
     dest: /home/{{username}}/nodesource_setup.sh
 
 - name: "Install Nodejs"
-  command: bash /home/{{username}}/nodesource_setup.sh
+  shell: bash /home/{{username}}/nodesource_setup.sh
 
-- name: "Install git"
-  apt: name=git update_cache=yes
-
-- name: "Copy git config"
-  template: src=templates/gitconfig.jinja2 dest=/home/{{username}}/.gitconfig
+- name: "Install Node x npm"
+  apt: name=nodejs update_cache=yes state=present
 
 - name: "Install postgres"
   apt: name={{item}} state=present update_cache=yes
@@ -39,3 +36,9 @@
       - jekyll
       - bundler
       - rouge
+
+- name: "Instal gulp x browsersync"
+  npm: name={{item}} global=yes state=present
+  with_items:
+    - gulp
+    - browser-sync
