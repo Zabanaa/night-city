@@ -1,4 +1,3 @@
 ---
 - name: fix home folder permissions
   raw: "chown {{username}}:{{username}} -R /home/{{username}}"
-  become: true

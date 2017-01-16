@@ -19,8 +19,10 @@
       system: yes
       home: "/home/{{username}}"
       state: present
-  become_user: root
   notify: fix home folder permissions
+
+- name: "Add man to the sudoers"
+  raw: echo '%sudo	ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 - name: "Add authorized keys"
   authorized_key:
@@ -28,46 +30,40 @@
       state: present
       key: "{{ssh_keys_url}}"
 
-- name: "Add my man to the sudoers"
-  template:
-      src: templates/sudoers.jinja2
-      dest: /etc/sudoers
-
 - name: "Add fish-shell PPA"
   apt_repository: repo="ppa:fish-shell/release-2" state=present update_cache=yes
-  become: yes
 
 - name: "Install fish shell"
   apt: name=fish state=present
-  become: yes
 
 - name: "Create fish config directory"
   file: path="/home/{{username}}/.config/fish/functions" state=directory
-  become: yes
   notify: fix home folder permissions
+
+- name: "Install git"
+  apt: name=git update_cache=yes
+
+- name: "Copy git config"
+  template: src=templates/gitconfig.jinja2 dest=/home/{{username}}/.gitconfig
 
 - name: "Download Fundle"
   get_url:
       url: https://git.io/fundle-install
       dest: "/home/{{username}}/.config/fish/functions/fundle.fish"
-  become: yes
 
 - name: "Change my man's shell to fish"
   command: "/usr/bin/chsh -s /usr/bin/fish {{username}}"
-  become: yes
 
 - name: "Download Oh my fish"
   get_url:
       url: http://get.oh-my.fish
       dest: "/home/{{username}}/install"
-  become: true
 
 - name: "Install Vundle"
   git:
     repo: https://github.com/VundleVim/Vundle.vim.git
     dest: "/home/{{username}}/.vim/bundle/Vundle.vim"
     clone: yes
-  become: true
 
 - name: "Download my fish functions"
   git:
@@ -75,11 +71,9 @@
       dest: "/home/{{username}}/fishfuncs"
       clone: yes
       force: yes
-  become: true
 
 - name: "Install my fish functions"
   shell: cp /home/{{username}}/fishfuncs/*.fish /home/{{username}}/.config/fish/functions
-  become: yes
 
 - name: "download my dotfiles"
   git:
@@ -113,4 +107,16 @@
       - {src: "config.fish", dest: "/home/{{username}}/.config/fish/config.fish"}
       - {src: ".vimrc", dest: "/home/{{username}}/.vimrc"}
       - {src: ".tmux.conf", dest: "/home/{{username}}/.tmux.conf"}
-  become: yes
+
+# - stat: path="/home/{{username}}/.local/share/omf"
+#   register: omf
+
+# - shell: fish install
+#   args:
+#       chdir: /home/zabana
+#   when: omf.stat.isdir is not defined
+#   become: yes
+#   become_user: zabana
+#   register: omgomf
+
+# - debug: var=omgomf

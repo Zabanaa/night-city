@@ -1,12 +1,19 @@
----
 - hosts: wintermute
-  remote_user: zabana
+  name: Setup Wintermute
+  remote_user: root # or vagrant or whatevs really
   become: yes
+  gather_facts: no # Critical for this to work
+  vars:
+      ssh_keys_url: https://github.com/Zabanaa.keys
+      git_username: Karim Cheurfi
+      git_email: karim.cheurfi@gmail.com
+      username: zabana
+
   pre_tasks:
-      - name: "Add man to the sudoers"
-        raw: sudo echo "zabana ALL=(ALL:ALL) NOPASSWD:ALL" >> /etc/sudoers
-  tasks:
-      - name: "Doing the tings"
-        raw: echo "success"
+      - name: "Install Python"
+        raw: sudo apt-get install -y python-simplejson
 
-
+  roles:
+      - common
+      # - nginx
+      # - webdev
