@@ -7,5 +7,3 @@
 - name: "Enable the newly copied config"
   file: src=/etc/nginx/sites-available/zabana dest=/etc/nginx/sites-enabled/zabana state=link
   notify: reload nginx
-
-- debug: var=groups['wintermute'][0]
