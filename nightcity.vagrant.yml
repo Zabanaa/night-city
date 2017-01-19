@@ -1,6 +1,6 @@
 ---
 - hosts: vagrant
-  name: Setup Wintermute
+  name: Setup Vagrant Wintermute
   remote_user: ubuntu # or vagrant or whatevs really
   become: yes
   gather_facts: no # Critical for this to work
@@ -11,9 +11,6 @@
       username: zabana
 
   pre_tasks:
-      - name: "Add man to the sudoers"
-        raw: sudo echo "{{username}} ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers
-
       - name: "Install Python"
         raw: sudo apt-get install -y python-simplejson
 
