@@ -102,16 +102,3 @@
     repo: https://github.com/VundleVim/Vundle.vim.git
     dest: "/home/{{username}}/.vim/bundle/Vundle.vim"
     clone: yes
-
-# - stat: path="/home/{{username}}/.local/share/omf"
-#   register: omf
-
-# - shell: fish install
-#   args:
-#       chdir: /home/zabana
-#   when: omf.stat.isdir is not defined
-#   become: yes
-#   become_user: zabana
-#   register: omgomf
-
-# - debug: var=omgomf
