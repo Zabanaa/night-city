@@ -29,6 +29,7 @@
   with_items:
       - python3-pip
       - python-pip
+      - virtualenv
 
 - name: "Install Jekyll"
   gem: name={{item}} state=present
@@ -42,3 +43,4 @@
   with_items:
     - gulp
     - browser-sync
+    - nodemon
