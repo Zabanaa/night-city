@@ -23,8 +23,8 @@
   apt_repository:
       repo: 'ppa:jonathonf/vim'
 
-- name: "Install vim 8"
-  apt: name=vim state=present update_cache=yes
+- name: "Install vim 8 (with python3 support)"
+  apt: name=vim-nox state=present update_cache=yes
 
 - name: "Create User {{username}}"
   user:
