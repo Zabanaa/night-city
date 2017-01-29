@@ -2,6 +2,7 @@
 - name: "Install Necessary Packages"
   apt: name={{item}} state=present update_cache=yes
   with_items:
+      - automake
       - openssh-server
       - git
       - htop
