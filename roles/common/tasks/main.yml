@@ -4,7 +4,6 @@
   with_items:
       - openssh-server
       - git
-      - tmux
       - htop
       - curl
       - wget
@@ -18,13 +17,6 @@
   with_items:
       - software-properties-common
       - python-software-properties
-
-- name: "Add vim 8 PPA"
-  apt_repository:
-      repo: 'ppa:jonathonf/vim'
-
-- name: "Install vim 8 (with python3 support)"
-  apt: name=vim-nox state=present update_cache=yes
 
 - name: "Create User {{username}}"
   user:
@@ -102,18 +94,51 @@
 - name: "Create vim colors directory"
   file: path="/home/{{username}}/.vim/colors" state=directory
 
-- name: "Download seattle colorscheme"
+- name: "Download inkpot colorscheme"
   git:
-      repo: https://github.com/mbbill/vim-seattle.git
-      dest: "/home/{{username}}/seattle"
+      repo: https://github.com/ciaranm/inkpot.git
+      dest: "/home/{{username}}/inkpot"
       clone: yes
       force: yes
 
-- name: "Install seattle colour scheme"
-  command: "cp /home/{{username}}/seattle/colors/seattle.vim /home/{{username}}/.vim/colors/"
+- name: "Install inkpot colour scheme"
+  command: "cp /home/{{username}}/inkpot/colors/inkpot.vim /home/{{username}}/.vim/colors/"
 
 - name: "Install Vundle"
   git:
     repo: https://github.com/VundleVim/Vundle.vim.git
     dest: "/home/{{username}}/.vim/bundle/Vundle.vim"
     clone: yes
+
+- name: "Add vim 8 PPA"
+  apt_repository:
+      repo: 'ppa:jonathonf/vim'
+
+- name: "Install vim 8 (with python3 support)"
+  apt: name={{item}} state=present update_cache=yes
+  with_items:
+      - vim
+      - vim-nox
+
+- name: "Install Tmux 2.2+ Dependencies"
+  apt: name={{item}} state=present update_cache=yes
+  with_items:
+      - libevent-dev
+      - libncurses-dev
+      - build-essential
+
+- name: "Download Tmux"
+  git:
+      repo: https://github.com/tmux/tmux.git
+      dest: /home/{{username}}
+      clone: yes
+      force: yes
+
+- name: "Compile Tmux"
+  shell: autogen.sh
+  args:
+      chdir: "/home/{{username}}/tmux"
+
+- name: "Install Tmux"
+  raw: "cd /home/{{username}}/tmux && ./configure && make"
+  notify: move tmux executable to /usr/local/bin
