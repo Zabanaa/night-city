@@ -1,15 +1,30 @@
 ---
 - name: "Install Necessary Packages"
-  apt: name={{item}} state=present
+  apt: name={{item}} state=present update_cache=yes
   with_items:
       - openssh-server
       - git
       - tmux
-      - vim
       - htop
       - curl
       - wget
       - tree
+      - build-dep
+      - python3-psycopg2
+      - python-psycopg2
+
+- name: "Install Software Dependencies to allow use of add-apt-repository"
+  apt: name={{item}} state=present
+  with_items:
+      - software-properties-common
+      - python-software-properties
+
+- name: "Add vim 8 PPA"
+  apt_repository:
+      repo: 'ppa:jonathonf/vim'
+
+- name: "Install vim 8"
+  apt: name=vim state=present update_cache=yes
 
 - name: "Create User {{username}}"
   user:
