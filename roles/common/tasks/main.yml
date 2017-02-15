@@ -10,7 +10,6 @@
       - curl
       - wget
       - tree
-      - build-dep
       - python3-psycopg2
       - python-psycopg2
 
@@ -132,14 +131,12 @@
 - name: "Download Tmux"
   git:
       repo: https://github.com/tmux/tmux.git
-      dest: /home/{{username}}
+      dest: /home/{{username}}/tmux
       clone: yes
       force: yes
 
 - name: "Compile Tmux"
-  shell: autogen.sh
-  args:
-      chdir: "/home/{{username}}/tmux"
+  raw: "cd /home/{{username}}/tmux && ./autogen.sh"
 
 - name: "Install Tmux"
   raw: "cd /home/{{username}}/tmux && ./configure && make"

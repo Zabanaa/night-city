@@ -5,9 +5,7 @@
   apt: name=golang state=present update_cache=yes
 
 - name: "Create Go Workspace Directory"
-  file:
-    - path: "/home/{{username}}/gowork/src/github.com/zabanaa/"
-    - state: directory
+  file: path="/home/{{username}}/gowork/src/github.com/zabanaa/" state=directory
 
 - name: "Add Ruby PPA"
   apt_repository: repo="ppa:brightbox/ruby-ng" state=present update_cache=yes

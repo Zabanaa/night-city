@@ -8,10 +8,6 @@
       git_email: karim.cheurfi@gmail.com
       username: zabana
 
-  # pre_tasks:
-  #     - name: "Install Python"
-  #
-  #       raw: sudo apt-get install -y python-simplejson
   roles:
       - common
       - nginx
