@@ -1,3 +1,6 @@
 ---
 - name: fix home folder permissions
   raw: "chown {{username}}:{{username}} -R /home/{{username}}"
+
+- name: move tmux executable to /usr/local/bin
+  raw: "sudo mv /home/{{username}}/tmux/tmux /usr/local/bin"
