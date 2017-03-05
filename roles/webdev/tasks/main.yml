@@ -32,6 +32,7 @@
   with_items:
       - postgresql
       - postgresql-contrib
+      - libpq-dev
 
 - name: "Install pip and virtualenv"
   apt: name={{item}} update_cache=yes
