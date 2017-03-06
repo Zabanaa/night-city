@@ -36,3 +36,6 @@
       - {src: ".vimrc", dest: "/home/{{username}}/.vimrc"}
       - {src: ".tmux.conf", dest: "/home/{{username}}/.tmux.conf"}
       - {src: ".muttrc", dest: "/home/{{username}}/.muttrc"}
+
+- name: "Install HN Cli client"
+  pip: name=haxor-news
