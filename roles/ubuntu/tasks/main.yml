@@ -1,0 +1,38 @@
+---
+- name: "Install Necessary Packages"
+  apt: name={{item}} state=present update_cache=yes
+  with_items:
+    - mutt
+    - irssi
+    - python-pip
+    - albert
+    - unity-tweak-tool
+
+- name: "Create mutt directories"
+  file: path="/home/{{username}}/.mutt/cache/headers" state=directory
+  file: path="/home/{{username}}/.mutt/cache/bodies" state=directory
+  file: path="/home/{{username}}/.mutt/certificates"
+
+- name: "Copy email config file"
+  template:
+      src: "templates/mutt_gmail.j2"
+      dest: "/home/{{username}}/.mutt/account.com.gmail.main"
+      mode: 0644
+
+- name: "Download my dotfiles"
+  git:
+      repo: https://github.com/Zabanaa/dotfiles.git
+      dest: "/home/{{username}}/.dotfiles"
+      clone: yes
+      force: yes
+
+- name: "Install my dotfiles"
+  file:
+      src: "/home/{{username}}/.dotfiles/{{item.src}}"
+      dest: "{{item.dest}}"
+      state: link
+  with_items:
+      - {src: "config.fish", dest: "/home/{{username}}/.config/fish/config.fish"}
+      - {src: ".vimrc", dest: "/home/{{username}}/.vimrc"}
+      - {src: ".tmux.conf", dest: "/home/{{username}}/.tmux.conf"}
+      - {src: ".muttrc", dest: "/home/{{username}}/.muttrc"}
