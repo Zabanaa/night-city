@@ -95,15 +95,32 @@
 - name: "Create vim colors directory"
   file: path="/home/{{username}}/.vim/colors" state=directory
 
-- name: "Download inkpot colorscheme"
+- name: "Download dracula colorscheme"
   git:
-      repo: https://github.com/ciaranm/inkpot.git
-      dest: "/home/{{username}}/inkpot"
+      repo: https://github.com/dracula/vim
+      dest: "/home/{{username}}/dracula-vim"
       clone: yes
       force: yes
 
-- name: "Install inkpot colour scheme"
-  command: "cp /home/{{username}}/inkpot/colors/inkpot.vim /home/{{username}}/.vim/colors/"
+- name: "Download afterglow colorscheme"
+  git:
+      repo: https://github.com/danilo-augusto/vim-afterglow
+      dest: "/home/{{username}}/afterglow"
+      clone: yes
+      force: yes
+
+- name: "Download Ninsei Street"
+  git:
+      repo: https://zabana@gitlab.com/zabana/ninsei-street.git
+      dest: "/home/{{username}}/ninsei-street"
+      clone: yes
+      force: yes
+
+- name: "Install dracula colour scheme"
+  command: "cp /home/{{username}}/dracula-vim/colors/dracula.vim /home/{{username}}/.vim/colors/"
+
+- name: "Install afterglow colour scheme"
+  command: "cp /home/{{username}}/afterglow/colors/afterglow.vim /home/{{username}}/.vim/colors/"
 
 - name: "Install Vundle"
   git:
