@@ -109,6 +109,13 @@
       clone: yes
       force: yes
 
+- name: "Download afterglow colorscheme"
+  git:
+      repo: https://github.com/snowcrshd/cyberpunk.vim.git
+      dest: "/home/{{username}}/cyberpunk"
+      clone: yes
+      force: yes
+
 - name: "Download Ninsei Street"
   git:
       repo: https://zabana@gitlab.com/zabana/ninsei-street.git
@@ -121,6 +128,9 @@
 
 - name: "Install afterglow colour scheme"
   command: "cp /home/{{username}}/afterglow/colors/afterglow.vim /home/{{username}}/.vim/colors/"
+
+- name: "Install cyberpunk colour scheme"
+  command: "cp /home/{{username}}/cyberpunk/colors/cyberpunk.vim /home/{{username}}/.vim/colors/"
 
 - name: "Install Vundle"
   git:
